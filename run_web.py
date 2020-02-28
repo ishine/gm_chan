@@ -1,6 +1,7 @@
 # coding: utf-8
 import json
 import os
+import pandas as pd
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from tornado.options import define, options, parse_command_line
@@ -11,14 +12,14 @@ from chan import KlineAnalyze
 from gm.api import *
 
 # 在这里设置你的掘金 token，要在本地启动掘金终端，才能正常获取数据
-set_token("set your gm token")
+# set_token("set your gm token")
 
 
 def get_gm_kline(symbol, end_date, freq='D', k_count=3000):
     """从掘金获取历史K线数据"""
     if "-" not in end_date and isinstance(end_date, str):
         end_date = datetime.strptime(end_date, "%Y%m%d")
-    freq_convert = {"60s": "1min", "300s": "5min", "1800s": "30min", "1d": "D"}
+    freq_convert = {"60s": "1min", "300s": "5min", "1800s": "30min", "3600s": "60min", "1d": "D"}
     freq_convert = {v: k for k, v in freq_convert.items()}
     if freq[-1] in ['n', 'D']:
         freq = freq_convert[freq]
@@ -79,7 +80,7 @@ class KlineHandler(BaseHandler):
             trade_date = datetime.now().date().__str__().replace("-", "")
         kline = get_gm_kline(symbol=ts_code, end_date=trade_date, freq=freq, k_count=3000)
         ka = KlineAnalyze(kline)
-        kline = ka.chan_result
+        kline = pd.DataFrame(ka.kline)
         kline = kline.fillna("")
         columns = ["dt", "open", "close", "low", "high", "vol", 'fx_mark', 'fx', 'bi', 'xd']
 

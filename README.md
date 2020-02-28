@@ -4,7 +4,7 @@
 ## 启动方法
 
 1. 在 `run_web.py` 文件中设置你的掘金 token
-2. 执行 `pip intall -r requirements.txt` 安装环境
+2. 执行 `pip install -r requirements.txt` 安装环境
 3. 执行 `python run_web.py` 启动，不要改端口！！！
 
 启动后在本地 8005 端口访问服务，如：
